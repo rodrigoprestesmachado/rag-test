@@ -16,4 +16,7 @@ public interface AIService {
     @UserMessage("Context: {context}, Question: {ask}'")
     String chatbot(String ask, String context);
 
+    @UserMessage("Context: {context}, Question: {ask}'")
+    Multi<String> chatbotStream(String ask, String context);
+
 }

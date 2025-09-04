@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.global.min.js">
+    </script>
+</head>
+<body>
+    <div id="app">
+        <input type="text" v-model="prompt" placeholder="Type something">
+        <button @click="callApi">Ask</button>
+
+        <p>Response: {{ response }}</p>
+    </div>
+    <script>
+        // Vue 3
+        const app = Vue.createApp({
+            data() {
+                return {
+                    prompt: '',
+                    response: ''
+                }
+            },
+            methods: {
+                async callApi() {
+                    this.response = '';
+                    const response = await fetch('http://localhost:8081/ai/chatbot/stream', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        },
+                        body: new URLSearchParams({ prompt: this.prompt })
+                    });
+                    const reader = response.body.getReader();
+                    const decoder = new TextDecoder();
+                    let done = false;
+                    while (!done) {
+                        const { value, done: doneReading } = await reader.read();
+                        done = doneReading;
+                        if (value) {
+                            const chunkValue = decoder.decode(value);
+                            // Remove o prefixo "data:" e qualquer espaço em branco inicial
+                            const content = chunkValue.replace(/^data:\s*/,'');
+                            this.response += content;
+                        }
+                    }
+                }
+            }
+        })
+        app.mount('#app')
+    </script>
+</body>
+</html>

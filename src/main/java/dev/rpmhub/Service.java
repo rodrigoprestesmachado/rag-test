@@ -54,10 +54,24 @@ public class Service {
     @POST
     @Path("/chatbot")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    @Produces(MediaType.SERVER_SENT_EVENTS)
+    @Produces(MediaType.TEXT_PLAIN)
     public String chatbot(@FormParam("prompt") String prompt) {
-       String context = rag.search(prompt, MAX_RESULT).getFirst();
-       return model.chatbot(prompt, context);
+        String context = rag.search(prompt, MAX_RESULT).getFirst();
+        return model.chatbot(prompt, context);
+    }
+
+    @POST
+    @Path("/chatbot/stream")
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Produces(MediaType.SERVER_SENT_EVENTS)
+    public Multi<String> chatbotStream(@FormParam("prompt") String prompt) {
+        return rag.searchReactive(prompt, MAX_RESULT)
+                .flatMap(context -> {
+                    Log.info(context);
+                    return model.chatbotStream(prompt, context)
+                        .onItem()
+                        .transform(item->item);
+                });
     }
 
 }
