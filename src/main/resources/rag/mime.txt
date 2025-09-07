@@ -1,9 +1,3 @@
-
-
-
-
-
-
             Network Working Group               N. Borenstein, Bellcore
             Request for Comments: 1341               N. Freed, Innosoft
                                                               June 1992

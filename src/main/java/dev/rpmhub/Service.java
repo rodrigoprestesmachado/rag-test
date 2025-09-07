@@ -35,10 +35,11 @@ public class Service {
         return model.ask(prompt);
     }
 
-    @GET
+    @POST
     @Path("/ask/stream")
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.SERVER_SENT_EVENTS)
-    public Multi<String> askModelStream(@QueryParam("prompt") String prompt) {
+    public Multi<String> askModelStream(@FormParam("prompt") String prompt) {
         return model.askStream(prompt);
     }
 
