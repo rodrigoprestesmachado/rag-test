@@ -39,16 +39,10 @@ public class Service {
     @Path("/ask/stream")
     @Produces(MediaType.SERVER_SENT_EVENTS)
     public Multi<String> askModelStream(@QueryParam("prompt") String prompt) {
-        return model.askStream(prompt);
-    }
-
-    @POST
-    @Path("/rag")
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    @Produces(MediaType.SERVER_SENT_EVENTS)
-    public String rag(@FormParam("prompt") String prompt) {
-        Log.info("Test");
-        return rag.search(prompt, MAX_RESULT).getFirst();
+        return rag.searchReactive(prompt, MAX_RESULT)
+            .flatMap(context -> model.askStream(prompt))
+            .group().intoLists().of(20)
+            .onItem().transform(list -> String.join("", list));
     }
 
     @POST
