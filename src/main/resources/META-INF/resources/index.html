@@ -127,7 +127,14 @@
                 return;
               }
 
-              // Concatena o texto recebido
+              // Concatena o texto recebido com espaçamento adequado
+              if (botMessage && event.data && 
+                  !botMessage.endsWith(' ') && 
+                  !event.data.startsWith(' ') &&
+                  /\w$/.test(botMessage) && 
+                  /^\w/.test(event.data)) {
+                botMessage += ' ';
+              }
               botMessage += event.data;
 
               // Atualiza ou adiciona a mensagem do bot
