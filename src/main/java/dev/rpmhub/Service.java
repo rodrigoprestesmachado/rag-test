@@ -2,6 +2,7 @@ package dev.rpmhub;
 
 import dev.rpmhub.ai.AIService;
 import dev.rpmhub.rag.RagQuery;
+import io.quarkus.logging.Log;
 import io.smallrye.mutiny.Multi;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
@@ -29,8 +30,9 @@ public class Service {
     @Produces(MediaType.SERVER_SENT_EVENTS)
     public Multi<String> askModel(@QueryParam("session") String session,
             @QueryParam("prompt") String prompt) {
-        // Usa ConversationalChain com memória de sessão
-        return rag.searchReactive(prompt, MAX_RESULT)
+        
+            Log.info("Session: " + session);
+            return rag.searchReactive(prompt, MAX_RESULT)
                 .flatMap(context -> model.ask(session, prompt))
                 .group().intoLists().of(20)
                 .onItem().transform(list -> String.join("", list));
@@ -39,7 +41,7 @@ public class Service {
     @GET
     @Path("/chatbot")
     @Produces(MediaType.SERVER_SENT_EVENTS)
-    public Multi<String> chatbotStreamConversational(@QueryParam("session") String session,
+    public Multi<String> chatbot(@QueryParam("session") String session,
             @QueryParam("prompt") String prompt) {
         return rag.searchReactive(prompt, MAX_RESULT)
                 .flatMap(context -> {
