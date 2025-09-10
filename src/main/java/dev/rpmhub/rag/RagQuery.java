@@ -6,7 +6,6 @@ import dev.langchain4j.data.segment.TextSegment;
 import dev.langchain4j.model.embedding.EmbeddingModel;
 import dev.langchain4j.store.embedding.EmbeddingSearchRequest;
 import dev.langchain4j.store.embedding.EmbeddingStore;
-import io.quarkus.logging.Log;
 import io.smallrye.mutiny.Multi;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -24,19 +23,7 @@ public class RagQuery {
         this.embeddingModel = embeddingModel;
     }
 
-    public List<String> search(String queryString, int maxResult) {
-        EmbeddingSearchRequest query = EmbeddingSearchRequest.builder()
-                .queryEmbedding(embeddingModel.embed(queryString).content())
-                .minScore(0.7)
-                .maxResults(maxResult)
-                .build();
-
-        return embeddingStore.search(query).matches().stream()
-                .map(match -> match.embedded().text())
-                .toList();
-    }
-
-    public Multi<String> searchReactive(String queryString, int maxResult) {
+    public Multi<String> search(String queryString, int maxResult) {
         return Multi.createFrom().item(queryString)
                 .emitOn(io.quarkus.runtime.ExecutorRecorder.getCurrent())
                 .map(query -> {

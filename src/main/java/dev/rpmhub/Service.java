@@ -30,9 +30,9 @@ public class Service {
     @Produces(MediaType.SERVER_SENT_EVENTS)
     public Multi<String> askModel(@QueryParam("session") String session,
             @QueryParam("prompt") String prompt) {
-        
-            Log.info("Session: " + session);
-            return rag.searchReactive(prompt, MAX_RESULT)
+
+        Log.info("Session: " + session);
+        return rag.search(prompt, MAX_RESULT)
                 .flatMap(context -> model.ask(session, prompt))
                 .group().intoLists().of(20)
                 .onItem().transform(list -> String.join("", list));
@@ -43,11 +43,12 @@ public class Service {
     @Produces(MediaType.SERVER_SENT_EVENTS)
     public Multi<String> chatbot(@QueryParam("session") String session,
             @QueryParam("prompt") String prompt) {
-        return rag.searchReactive(prompt, MAX_RESULT)
+
+        return rag.search(prompt, MAX_RESULT)
                 .flatMap(context -> {
                     return model.chatbot(session, context, prompt)
-                        .onItem()
-                        .transform(item -> item);
+                            .onItem()
+                            .transform(item -> item);
                 });
     }
 
