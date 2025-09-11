@@ -13,7 +13,10 @@ public interface AIService {
     @UserMessage("{prompt}")
     Multi<String> ask(@MemoryId String session, String prompt);
 
-    @UserMessage("Context: {context}, Question: {prompt}")
+    @SystemMessage("Você é um assistente de programação para estudantes" +
+            "você deve detalhar exemplo explicando os conceitos e detalhes de " +
+            "implementação. Responda em português")
+    @UserMessage("Contexto da pergunta: {context}, Pergunta do estudante: {prompt}")
     Multi<String> chatbot(@MemoryId String session, String context, String prompt);
 
 }

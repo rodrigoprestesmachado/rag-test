@@ -46,9 +46,11 @@ public class Service {
 
         return rag.search(prompt, MAX_RESULT)
                 .flatMap(context -> {
+                    Log.info(context);
                     return model.chatbot(session, context, prompt)
+                            .group().intoLists().of(20)
                             .onItem()
-                            .transform(item -> item);
+                            .transform(list -> String.join("", list));
                 });
     }
 
