@@ -21,25 +21,23 @@ import jakarta.inject.Inject;
 public class AIServiceAdapter implements AIService {
 
     /**
-     * The personalized AI service used for generating responses.
+     * The LangChain AI service used for generating responses.
      */
-    private final PersonalizedAIService ai;
+    private final LangChainAIService ai;
 
     @Inject
-    public AIServiceAdapter(PersonalizedAIService langChain4jService) {
-        this.ai = langChain4jService;
+    public AIServiceAdapter(LangChainAIService langChainService) {
+        this.ai = langChainService;
     }
 
     @Override
     public Multi<String> generateResponse(AIRequest request) {
-        return ai.generateResponse(request.getSessionId(), request.getPrompt());
+        return ai.generateResponse(request.getPrompt());
     }
 
     @Override
     public Multi<String> generateContextualResponse(AIRequest request) {
-        return ai.generateContextualResponse(request.getSessionId(),
-                request.getHistory(),
-                request.getContext(),
-                request.getPrompt());
+        return ai.generateContextualResponse(request.getHistory(),
+                request.getContext(), request.getPrompt());
     }
 }

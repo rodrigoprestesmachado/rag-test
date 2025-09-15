@@ -8,7 +8,6 @@
 
 package dev.rpmhub.infrastructure.adapter;
 
-import dev.langchain4j.service.MemoryId;
 import dev.langchain4j.service.UserMessage;
 import dev.langchain4j.service.SystemMessage;
 import io.quarkiverse.langchain4j.RegisterAiService;
@@ -18,7 +17,7 @@ import io.smallrye.mutiny.Multi;
  * Personalized AI service interface for handling AI interactions.
  */
 @RegisterAiService
-public interface PersonalizedAIService {
+public interface LangChainAIService {
 
         String DEFAULT_SYSTEM_MESSAGE = "Você é um assistente de programação " +
                         "para estudantes você deve detalhar os exemplos de código e explicar " +
@@ -26,12 +25,10 @@ public interface PersonalizedAIService {
 
         @SystemMessage(DEFAULT_SYSTEM_MESSAGE)
         @UserMessage("{prompt}")
-        Multi<String> generateResponse(@MemoryId String session, String prompt);
+        Multi<String> generateResponse(String prompt);
 
         @SystemMessage(DEFAULT_SYSTEM_MESSAGE)
         @UserMessage("Histórico: {history}, Contexto: {context}, pergunta: {prompt}")
-        Multi<String> generateContextualResponse(@MemoryId String session,
-                        String history,
-                        String context,
+        Multi<String> generateContextualResponse(String history, String context,
                         String prompt);
 }

@@ -16,7 +16,7 @@ import java.util.List;
  */
 public class ConversationMemory {
 
-    private String sessionId;
+    private String session;
     private List<ChatMessage> messages;
     private LocalDateTime lastActivity;
     private int maxMessages;
@@ -27,13 +27,13 @@ public class ConversationMemory {
         this.maxMessages = 50; // Default limit
     }
 
-    public ConversationMemory(String sessionId) {
+    public ConversationMemory(String session) {
         this();
-        this.sessionId = sessionId;
+        this.session = session;
     }
 
-    public ConversationMemory(String sessionId, int maxMessages) {
-        this(sessionId);
+    public ConversationMemory(String session, int maxMessages) {
+        this(session);
         this.maxMessages = maxMessages;
     }
 
@@ -87,12 +87,12 @@ public class ConversationMemory {
     }
 
     // Getters and Setters
-    public String getSessionId() {
-        return sessionId;
+    public String getSession() {
+        return session;
     }
 
-    public void setSessionId(String sessionId) {
-        this.sessionId = sessionId;
+    public void setSession(String session) {
+        this.session = session;
     }
 
     public List<ChatMessage> getMessages() {
@@ -126,7 +126,7 @@ public class ConversationMemory {
     @Override
     public String toString() {
         return "ConversationMemory{" +
-                "sessionId='" + sessionId + '\'' +
+                "session='" + session + '\'' +
                 ", messageCount=" + messages.size() +
                 ", lastActivity=" + lastActivity +
                 ", maxMessages=" + maxMessages +
