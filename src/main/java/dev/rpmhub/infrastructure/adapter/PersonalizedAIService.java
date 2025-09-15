@@ -21,16 +21,17 @@ import io.smallrye.mutiny.Multi;
 public interface PersonalizedAIService {
 
         String DEFAULT_SYSTEM_MESSAGE = "Você é um assistente de programação " +
-                "para estudantes você deve detalhar os exemplos de código e explicar " +
-                "conceitos. Responda em português";
+                        "para estudantes você deve detalhar os exemplos de código e explicar " +
+                        "conceitos. Responda em português";
 
         @SystemMessage(DEFAULT_SYSTEM_MESSAGE)
         @UserMessage("{prompt}")
         Multi<String> generateResponse(@MemoryId String session, String prompt);
 
         @SystemMessage(DEFAULT_SYSTEM_MESSAGE)
-        @UserMessage("Contexto da pergunta: {context}, pergunta: {prompt}")
+        @UserMessage("Histórico: {history}, Contexto: {context}, pergunta: {prompt}")
         Multi<String> generateContextualResponse(@MemoryId String session,
+                        String history,
                         String context,
                         String prompt);
 }

@@ -11,12 +11,22 @@ public class AIRequest {
 
     private final String sessionId;
     private final String prompt;
-    private final String context;
+    private final String ragContext;
+    private final String history;
 
-    public AIRequest(String sessionId, String prompt, String context) {
+    public AIRequest(String sessionId, String prompt, String ragContext) {
         this.sessionId = sessionId;
         this.prompt = prompt;
-        this.context = context;
+        this.ragContext = ragContext;
+        this.history = "";
+    }
+
+    public AIRequest(String sessionId, String prompt, String ragContext,
+            String history) {
+        this.sessionId = sessionId;
+        this.prompt = prompt;
+        this.ragContext = ragContext;
+        this.history = history;
     }
 
     public String getSessionId() {
@@ -28,6 +38,10 @@ public class AIRequest {
     }
 
     public String getContext() {
-        return context;
+        return ragContext;
+    }
+
+    public String getHistory() {
+        return history;
     }
 }

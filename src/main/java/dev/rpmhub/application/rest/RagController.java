@@ -7,10 +7,13 @@
  */
 package dev.rpmhub.application.rest;
 
+import dev.rpmhub.domain.model.ConversationMemory;
+import dev.rpmhub.domain.port.MemoryService;
 import dev.rpmhub.domain.usecase.AskQuestionUseCase;
 import dev.rpmhub.domain.usecase.ChatbotUseCase;
 import io.quarkus.logging.Log;
 import io.smallrye.mutiny.Multi;
+import io.smallrye.mutiny.Uni;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
@@ -23,11 +26,13 @@ public class RagController {
 
     private final ChatbotUseCase chatbotUseCase;
     private final AskQuestionUseCase askQuestionUseCase;
+    private final MemoryService memoryService;
 
     @Inject
-    public RagController(ChatbotUseCase chatbotUseCase, AskQuestionUseCase askQuestionUseCase) {
+    public RagController(ChatbotUseCase chatbotUseCase, AskQuestionUseCase askQuestionUseCase, MemoryService memoryService) {
         this.chatbotUseCase = chatbotUseCase;
         this.askQuestionUseCase = askQuestionUseCase;
+        this.memoryService = memoryService;
     }
 
     @GET
@@ -45,5 +50,13 @@ public class RagController {
             @QueryParam("prompt") String prompt) {
         Log.info("Session: " + session);
         return askQuestionUseCase.execute(session, prompt);
+    }
+
+    @GET
+    @Path("/memory")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Uni<ConversationMemory> getMemory(@QueryParam("session") String session) {
+        Log.info("Getting memory for session: " + session);
+        return memoryService.getConversationMemory(session);
     }
 }

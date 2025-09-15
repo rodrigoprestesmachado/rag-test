@@ -38,6 +38,8 @@ public class AIServiceAdapter implements AIService {
     @Override
     public Multi<String> generateContextualResponse(AIRequest request) {
         return ai.generateContextualResponse(request.getSessionId(),
-                request.getContext(), request.getPrompt());
+                request.getHistory(),
+                request.getContext(),
+                request.getPrompt());
     }
 }

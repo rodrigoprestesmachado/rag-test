@@ -10,9 +10,11 @@ package dev.rpmhub.domain.usecase;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import dev.rpmhub.domain.model.AIRequest;
+import dev.rpmhub.domain.model.ChatMessage;
 import dev.rpmhub.domain.model.RagQuery;
 import dev.rpmhub.domain.port.AIService;
 import dev.rpmhub.domain.port.EmbeddingRepository;
+import dev.rpmhub.domain.port.MemoryService;
 import io.quarkus.logging.Log;
 import io.smallrye.mutiny.Multi;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -36,39 +38,64 @@ public class ChatbotUseCase {
     private final AIService aiService;
 
     /**
+     * Service for managing conversation memory.
+     */
+    private final MemoryService memoryService;
+
+    /**
      * Default context to use when no context is found.
      */
     @ConfigProperty(name = "rag.context", defaultValue = "")
     private static final String DEFAULT_CONTEXT = "";
 
     @Inject
-    public ChatbotUseCase(EmbeddingRepository embeddingRepository, AIService aiService) {
+    public ChatbotUseCase(EmbeddingRepository embeddingRepository, AIService aiService, MemoryService memoryService) {
         this.embeddingRepository = embeddingRepository;
         this.aiService = aiService;
+        this.memoryService = memoryService;
     }
 
     /**
      * Executes the use case to interact with the chatbot.
      *
-     * @param sessionId the session ID
-     * @param prompt    the user prompt
+     * @param session the session ID
+     * @param prompt  the user prompt
      * @return a Multi emitting the chatbot response
      */
-    public Multi<String> execute(String sessionId, String prompt) {
-        RagQuery query = new RagQuery(prompt, 1, 0.7);
+    public Multi<String> execute(String session, String prompt) {
+        Log.info("Executing ChatbotUseCase for session: " + session + " with prompt: " + prompt);
+        // Save user message to memory
+        ChatMessage userMessage = new ChatMessage(session, prompt, ChatMessage.MessageType.USER);
 
-        return embeddingRepository.searchChunks(query)
-                .flatMap(ragResponse -> {
-                    String context = ragResponse.getContexts().isEmpty()
-                            ? DEFAULT_CONTEXT
-                            : ragResponse.getFirstContext();
+        return memoryService.saveMessage(userMessage)
+                .onItem().invoke(() -> Log.info("Saved user message for session: " + session))
+                .onItem().transformToMulti(ignored -> {
+                    RagQuery query = new RagQuery(prompt, 1, 0.7);
 
-                    Log.info("Context: " + context);
+                    return embeddingRepository.searchChunks(query)
+                            .flatMap(ragResponse -> {
+                                String context = ragResponse.getContexts().isEmpty()
+                                        ? DEFAULT_CONTEXT
+                                        : ragResponse.getFirstContext();
 
-                    AIRequest aiRequest = new AIRequest(sessionId, prompt, context);
-                    return aiService.generateContextualResponse(aiRequest)
-                            .group().intoLists().of(20)
-                            .onItem().transform(list -> String.join("", list));
+                                Log.info("Context: " + context);
+
+                                // Get conversation history for context
+                                return memoryService.getConversationHistory(session)
+                                        .onItem().transformToMulti(history -> {
+                                            AIRequest aiRequest = new AIRequest(session, prompt, context, history);
+                                            return aiService.generateContextualResponse(aiRequest)
+                                                    .group().intoLists().of(20)
+                                                    .onItem().transform(list -> String.join("", list))
+                                                    .onItem().call(response -> {
+                                                        // Save assistant response to memory
+                                                        ChatMessage assistantMessage = new ChatMessage(session,
+                                                                response,
+                                                                ChatMessage.MessageType.ASSISTANT);
+                                                        return memoryService.saveMessage(assistantMessage);
+                                                    });
+                                        });
+                            });
                 });
     }
 }
