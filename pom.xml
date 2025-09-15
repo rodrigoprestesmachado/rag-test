@@ -62,9 +62,9 @@
             <artifactId>langchain4j-embeddings-all-minilm-l6-v2</artifactId>
         </dependency>
         <dependency>
-            <groupId>io.quarkiverse.docling</groupId>
-            <artifactId>quarkus-docling</artifactId>
-            <version>0.0.4</version>
+            <groupId>io.quarkiverse.pdfbox</groupId>
+            <artifactId>quarkus-pdfbox</artifactId>
+            <version>1.1.1</version>
         </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>

@@ -1,31 +1,43 @@
+/**
+ * This file contains confidential and proprietary information.
+ * Unauthorized copying, distribution, or use of this file or its contents is
+ * strictly prohibited.
+ *
+ * 2025 Rodrigo Prestes Machado. All rights reserved.
+ */
 package dev.rpmhub.infrastructure.adapter;
 
 import dev.rpmhub.domain.model.AIRequest;
 import dev.rpmhub.domain.port.AIService;
 import io.smallrye.mutiny.Multi;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 
 /**
- * Adaptador para serviço de IA usando LangChain4j
+ * Adapter for the AIService interface, using a personalized AI service
+ * implementation.
  */
 @ApplicationScoped
 public class AIServiceAdapter implements AIService {
 
-    // Implementação simples que delega para o LangChain4j
-    // O Quarkus irá injetar automaticamente a implementação gerada
-    private final LangChain4jAIService langChain4jService;
+    /**
+     * The personalized AI service used for generating responses.
+     */
+    private final PersonalizedAIService ai;
 
-    public AIServiceAdapter(LangChain4jAIService langChain4jService) {
-        this.langChain4jService = langChain4jService;
+    @Inject
+    public AIServiceAdapter(PersonalizedAIService langChain4jService) {
+        this.ai = langChain4jService;
     }
 
     @Override
     public Multi<String> generateResponse(AIRequest request) {
-        return langChain4jService.generateResponse(request.getSessionId(), request.getPrompt());
+        return ai.generateResponse(request.getSessionId(), request.getPrompt());
     }
 
     @Override
     public Multi<String> generateContextualResponse(AIRequest request) {
-        return langChain4jService.generateContextualResponse(request.getSessionId(), request.getContext(), request.getPrompt());
+        return ai.generateContextualResponse(request.getSessionId(),
+                request.getContext(), request.getPrompt());
     }
 }

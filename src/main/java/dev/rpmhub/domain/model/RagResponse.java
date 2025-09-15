@@ -1,10 +1,15 @@
+/**
+ * This file contains confidential and proprietary information.
+ * Unauthorized copying, distribution, or use of this file or its contents is
+ * strictly prohibited.
+ *
+ * 2025 Rodrigo Prestes Machado. All rights reserved.
+ */
+
 package dev.rpmhub.domain.model;
 
 import java.util.List;
 
-/**
- * Modelo de domínio para respostas RAG
- */
 public class RagResponse {
     private final String query;
     private final List<String> contexts;
