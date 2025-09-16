@@ -8,6 +8,12 @@
 
 package dev.rpmhub.domain.model;
 
+import lombok.Getter;
+
+/**
+ * Represents a query for a RAG (Retrieval-Augmented Generation) system.
+ */
+@Getter
 public class RagQuery {
     private final String query;
     private final int maxResults;
@@ -19,15 +25,4 @@ public class RagQuery {
         this.minScore = minScore;
     }
 
-    public String getQuery() {
-        return query;
-    }
-
-    public int getMaxResults() {
-        return maxResults;
-    }
-
-    public double getMinScore() {
-        return minScore;
-    }
 }

@@ -49,7 +49,7 @@ public interface MemoryService {
      * @param sessionId the session identifier
      * @return a Uni containing the conversation history
      */
-    Uni<String> getConversationHistory(String sessionId);
+    Uni<String> getHistory(String sessionId);
 
     /**
      * Clears the conversation memory for a specific session.

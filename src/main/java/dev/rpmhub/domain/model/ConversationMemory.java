@@ -11,9 +11,14 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 /**
  * Represents a conversation memory for a specific session.
  */
+@Getter @Setter @ToString
 public class ConversationMemory {
 
     private String session;
@@ -56,7 +61,7 @@ public class ConversationMemory {
     /**
      * Gets the conversation history as a formatted string.
      */
-    public String getConversationHistory() {
+    public String getHistory() {
         StringBuilder history = new StringBuilder();
         for (ChatMessage message : messages) {
             history.append(message.getType().name())
@@ -86,50 +91,13 @@ public class ConversationMemory {
         this.lastActivity = LocalDateTime.now();
     }
 
-    // Getters and Setters
-    public String getSession() {
-        return session;
-    }
-
-    public void setSession(String session) {
-        this.session = session;
-    }
-
-    public List<ChatMessage> getMessages() {
-        return messages;
-    }
-
-    public void setMessages(List<ChatMessage> messages) {
-        this.messages = messages;
-    }
-
-    public LocalDateTime getLastActivity() {
-        return lastActivity;
-    }
-
-    public void setLastActivity(LocalDateTime lastActivity) {
-        this.lastActivity = lastActivity;
-    }
-
-    public int getMaxMessages() {
-        return maxMessages;
-    }
-
-    public void setMaxMessages(int maxMessages) {
-        this.maxMessages = maxMessages;
-    }
-
+    /**
+     * Gets the current number of messages in the conversation.
+     *
+     * @return the number of messages
+     */
     public int getMessageCount() {
-        return messages.size();
+        return this.messages.size();
     }
 
-    @Override
-    public String toString() {
-        return "ConversationMemory{" +
-                "session='" + session + '\'' +
-                ", messageCount=" + messages.size() +
-                ", lastActivity=" + lastActivity +
-                ", maxMessages=" + maxMessages +
-                '}';
-    }
 }

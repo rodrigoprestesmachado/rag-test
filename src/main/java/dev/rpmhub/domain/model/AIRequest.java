@@ -7,41 +7,33 @@
  */
 package dev.rpmhub.domain.model;
 
+import lombok.Getter;
+
+/**
+ * Represents a request to an AI service, including session ID, prompt,
+ * context, and optional conversation history.
+ */
+@Getter
 public class AIRequest {
 
-    private final String sessionId;
+    private final String session;
     private final String prompt;
-    private final String ragContext;
+    private final String context;
     private final String history;
 
-    public AIRequest(String sessionId, String prompt, String ragContext) {
-        this.sessionId = sessionId;
+    public AIRequest(String session, String prompt, String context) {
+        this.session = session;
         this.prompt = prompt;
-        this.ragContext = ragContext;
+        this.context = context;
         this.history = "";
     }
 
-    public AIRequest(String sessionId, String prompt, String ragContext,
+    public AIRequest(String session, String prompt, String context,
             String history) {
-        this.sessionId = sessionId;
+        this.session = session;
         this.prompt = prompt;
-        this.ragContext = ragContext;
+        this.context = context;
         this.history = history;
     }
 
-    public String getSessionId() {
-        return sessionId;
-    }
-
-    public String getPrompt() {
-        return prompt;
-    }
-
-    public String getContext() {
-        return ragContext;
-    }
-
-    public String getHistory() {
-        return history;
-    }
 }

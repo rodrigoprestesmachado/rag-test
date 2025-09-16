@@ -31,7 +31,8 @@ public class AskQuestionUseCase {
     private static final String DEFAULT_CONTEXT = "";
 
     @Inject
-    public AskQuestionUseCase(EmbeddingRepository embeddingRepository, AIService aiService) {
+    public AskQuestionUseCase(EmbeddingRepository embeddingRepository,
+            AIService aiService) {
         this.embeddingRepository = embeddingRepository;
         this.aiService = aiService;
     }
@@ -39,11 +40,11 @@ public class AskQuestionUseCase {
     /**
      * Executes the use case to ask a question and get a response.
      *
-     * @param sessionId the session ID
-     * @param prompt    the question prompt
+     * @param session the session ID
+     * @param prompt  the question prompt
      * @return a Multi emitting the response
      */
-    public Multi<String> execute(String sessionId, String prompt) {
+    public Multi<String> execute(String session, String prompt) {
         RagQuery query = new RagQuery(prompt, 1, 0.7);
 
         return embeddingRepository.searchChunks(query)
@@ -52,7 +53,7 @@ public class AskQuestionUseCase {
                             ? DEFAULT_CONTEXT
                             : ragResponse.getFirstContext();
 
-                    AIRequest aiRequest = new AIRequest(sessionId, prompt, context);
+                    AIRequest aiRequest = new AIRequest(session, prompt, context);
                     return aiService.generateResponse(aiRequest);
                 })
                 .group().intoLists().of(20)

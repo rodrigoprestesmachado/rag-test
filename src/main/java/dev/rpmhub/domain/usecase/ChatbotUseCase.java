@@ -81,7 +81,7 @@ public class ChatbotUseCase {
                                 Log.info("Context: " + context);
 
                                 // Get conversation history for context
-                                return memoryService.getConversationHistory(session)
+                                return memoryService.getHistory(session)
                                         .onItem().transformToMulti(history -> {
                                             AIRequest aiRequest = new AIRequest(session, prompt, context, history);
                                             return aiService.generateContextualResponse(aiRequest)

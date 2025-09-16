@@ -9,9 +9,14 @@ package dev.rpmhub.domain.model;
 
 import java.time.LocalDateTime;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 /**
  * Represents a chat message in the conversation memory.
  */
+@Getter @Setter @ToString
 public class ChatMessage {
 
     private String id;
@@ -35,54 +40,4 @@ public class ChatMessage {
         USER, ASSISTANT, SYSTEM
     }
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getSessionId() {
-        return sessionId;
-    }
-
-    public void setSessionId(String sessionId) {
-        this.sessionId = sessionId;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public MessageType getType() {
-        return type;
-    }
-
-    public void setType(MessageType type) {
-        this.type = type;
-    }
-
-    public LocalDateTime getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(LocalDateTime timestamp) {
-        this.timestamp = timestamp;
-    }
-
-    @Override
-    public String toString() {
-        return "ChatMessage{" +
-                "id='" + id + '\'' +
-                ", sessionId='" + sessionId + '\'' +
-                ", content='" + content + '\'' +
-                ", type=" + type +
-                ", timestamp=" + timestamp +
-                '}';
-    }
 }

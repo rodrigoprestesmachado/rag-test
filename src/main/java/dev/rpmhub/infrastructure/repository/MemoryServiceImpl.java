@@ -72,6 +72,12 @@ public class MemoryServiceImpl implements MemoryService {
                 .replaceWithVoid();
     }
 
+    /**
+     * Retrieves the conversation memory for a specific session.
+     *
+     * @param sessionId the session identifier
+     * @return a Uni containing the conversation memory, or null if not found
+     */
     @Override
     public Uni<ConversationMemory> getConversationMemory(String sessionId) {
         String key = CONVERSATION_PREFIX + sessionId;
@@ -91,6 +97,13 @@ public class MemoryServiceImpl implements MemoryService {
                 .onFailure().recoverWithNull();
     }
 
+    /**
+     * Gets the last N messages from a conversation.
+     *
+     * @param sessionId the session identifier
+     * @param count     the number of messages to retrieve
+     * @return a Uni containing list of the last N messages
+     */
     @Override
     public Uni<List<ChatMessage>> getLastMessages(String sessionId, int count) {
         return getConversationMemory(sessionId)
@@ -102,14 +115,20 @@ public class MemoryServiceImpl implements MemoryService {
                 });
     }
 
+    /**
+     * Gets the full conversation history as a single string.
+     *
+     * @param session the session identifier
+     * @return a Uni containing the conversation history as a string
+     */
     @Override
-    public Uni<String> getConversationHistory(String sessionId) {
-        return getConversationMemory(sessionId)
+    public Uni<String> getHistory(String session) {
+        return getConversationMemory(session)
                 .onItem().transform(memory -> {
                     if (memory == null) {
                         return "";
                     }
-                    return memory.getConversationHistory();
+                    return memory.getHistory();
                 });
     }
 

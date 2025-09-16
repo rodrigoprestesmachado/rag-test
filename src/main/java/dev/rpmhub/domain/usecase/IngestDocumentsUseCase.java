@@ -22,6 +22,9 @@ import java.nio.file.Path;
 @ApplicationScoped
 public class IngestDocumentsUseCase {
 
+    /**
+     * Repository for managing embeddings.
+     */
     private final EmbeddingRepository embeddingRepository;
 
     @Inject

@@ -10,6 +10,12 @@ package dev.rpmhub.domain.model;
 
 import java.util.List;
 
+import lombok.Getter;
+
+/**
+ * Represents a response from a RAG (Retrieval-Augmented Generation) query.
+ */
+@Getter
 public class RagResponse {
     private final String query;
     private final List<String> contexts;
@@ -21,18 +27,11 @@ public class RagResponse {
         this.score = score;
     }
 
-    public String getQuery() {
-        return query;
-    }
-
-    public List<String> getContexts() {
-        return contexts;
-    }
-
-    public double getScore() {
-        return score;
-    }
-
+    /**
+     * Gets the first context from the list, or an empty string if none exist.
+     *
+     * @return the first context or an empty string
+     */
     public String getFirstContext() {
         return contexts.isEmpty() ? "" : contexts.get(0);
     }
